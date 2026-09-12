@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Важное сообщение 👀</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f0c29;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #f953c6, #b91d73, #c44dff, #ff6b6b);
+    background-size: 400% 400%;
+    animation: gm 5s ease infinite;
+  }
+  @keyframes gm { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  .card {
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 28px;
+    padding: 48px 36px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .em {
+    font-size: 80px;
+    display: block;
+    animation: fl 2.5s ease-in-out infinite;
+    margin-bottom: 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  @keyframes fl { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-14px) rotate(3deg)} }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    animation: pu 1.8s ease-in-out infinite;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  @keyframes pu { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  p { font-size: 18px; color: rgba(255,255,255,0.88); margin-bottom: 28px; }
+  .btn {
+    background: rgba(255,255,255,0.22);
+    border: 2px solid rgba(255,255,255,0.55);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 13px 32px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { background: rgba(255,255,255,0.38); transform: scale(1.04); }
+  canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<canvas id="c"></canvas>
+<div class="card">
+  <span class="em" id="em" onclick="boom()">😱</span>
+  <h1>Айкоша,<br>ты попалась!</h1>
+  <p>Ха-ха! Сюрприз! 🎉</p>
+  <button class="btn" onclick="boom()">Нажми ещё раз 😏</button>
+</div>
+<script>
+const emojis=['😱','🙈','😂','🎉','💀','😭','🤡','😈','🫵','🤣','👻','🫠'];
+let ei=0;
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+canvas.width=innerWidth; canvas.height=innerHeight;
+window.onresize=()=>{canvas.width=innerWidth;canvas.height=innerHeight};
+const cols=['#ff6b9d','#ffa94d','#ffe066','#74c0fc','#a9e34b','#c44dff','#ff6b6b','#fff'];
+let pieces=[];
+function spawn(n=60){for(let i=0;i<n;i++)pieces.push({x:Math.random()*canvas.width,y:-10,vx:(Math.random()-.5)*5,vy:2+Math.random()*4,rot:Math.random()*360,rs:(Math.random()-.5)*8,sz:7+Math.random()*8,col:cols[Math.floor(Math.random()*cols.length)],op:1});}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(p=>{ctx.save();ctx.globalAlpha=p.op;ctx.fillStyle=p.col;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz*.5);ctx.restore();p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;p.vy+=.05;if(p.y>canvas.height*.85)p.op-=.025;});pieces=pieces.filter(p=>p.op>0);requestAnimationFrame(draw);}
+function boom(){ei=(ei+1)%emojis.length;document.getElementById('em').textContent=emojis[ei];spawn(80);}
+spawn(60);draw();
+</script>
+</body>
+</html>
